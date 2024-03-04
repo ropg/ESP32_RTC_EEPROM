@@ -4,7 +4,7 @@
 
 *"Survives deep sleep, but not reset, powercycle or reflashing."*
 
-**Do not use this library if you just the data in some variables to survive deep sleep. Just mark the variables `RTC_DATA_ATTR` and you're all set. There's a tutorial [here](https://randomnerdtutorials.com/esp32-deep-sleep-arduino-ide-wake-up-sources/). This library is for you only if you have existing code that uses [`EEPROM.h`](https://github.com/espressif/arduino-esp32/blob/master/libraries/EEPROM/src/EEPROM.h), and you're okay with having anything written to EEPROM not survive reset, power loss or flashing new code.**
+**Do not use this library if you just want the data in some variables to survive deep sleep. Just mark the variables `RTC_DATA_ATTR` and you're all set. There's a tutorial [here](https://randomnerdtutorials.com/esp32-deep-sleep-arduino-ide-wake-up-sources/). This library is for you only if you have existing code that uses [`EEPROM.h`](https://github.com/espressif/arduino-esp32/blob/master/libraries/EEPROM/src/EEPROM.h), and you're okay with having anything written to EEPROM not survive reset, power loss or flashing new code.**
 
 &nbsp;
 
@@ -16,7 +16,7 @@ Espressif's ESP32 Arduino code includes an Arduino EEPROM implementation that wr
 
 If your application keeps the ESP32 battery-powered but puts it in deep sleep, it uses so little power it's effectively off as far as battery life is concerned. You can have it wake up again after a certain amount of time has expired and/or if a GPIO (i.e. button) goes high or low.
 
-This library will emulate EEPROM in RTC RAM, which stays powered during deep sleep. To learn more about deep sleep, check [this easy tutorial](https://randomnerdtutorials.com/esp32-deep-sleep-arduino-ide-wake-up-sources/), or [Espressif's documentation](https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32s3/api-reference/system/sleep_modes.html) if you want all the details. Like mentioned above, use this library only if yoru existing code uses EEPROM. Simply having some variables survive deep sleep is way easier, check the tutorial.
+This library will emulate EEPROM in RTC RAM, which stays powered during deep sleep. To learn more about deep sleep, check [this easy tutorial](https://randomnerdtutorials.com/esp32-deep-sleep-arduino-ide-wake-up-sources/), or [Espressif's documentation](https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32s3/api-reference/system/sleep_modes.html) if you want all the details. Like mentioned above, use this library only if your existing code uses EEPROM. Simply having some variables survive deep sleep is way easier, check the tutorial.
 
 ### Usage
 
