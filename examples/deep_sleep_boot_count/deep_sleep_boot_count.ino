@@ -1,6 +1,7 @@
 /* This will show you the boot count, but only if you use the button to wake up from
    from deep sleep. As you will see, hitting the reset button, reflashing and powering
-   down will all start the count at zero again.
+   down will all start the count at the last multiple of 10, because that is the last
+   time the contents of the RTC RAM were copied to NVS (flash).
 */ 
 
 #define BUTTON_GPIO GPIO_NUM_0
@@ -16,10 +17,23 @@ void setup() {
   // data will always take up EEPROM_SIZE in RTC RAM.
   EEPROM.begin(512);
 
+  // Read from "EEPROM"
+  uint8_t bootcount = EEPROM.read(0);
+
+  // Increase bootcount
+  bootcount++;
+
   // Print boot count
-  Serial.println("Boot count: " + String(EEPROM.read(0)));
+  Serial.println("Boot count: " + String(bootcount));
+  
   // Write new value
-  EEPROM.write(0, EEPROM.read(0) + 1);
+  EEPROM.write(0, bootcount);
+
+  // Save a copy to NVS every 10 boots, so we can resume from this point if we reset / lose power
+  if (bootcount % 10 == 0) {
+    Serial.println("Backing up the current EEPROM data from RTC RAM to NVS (flash).");
+    EEPROM.toNVS();
+  }
   
   // Data is written immediately, calls to commit() and end() are ignored
   EEPROM.commit();

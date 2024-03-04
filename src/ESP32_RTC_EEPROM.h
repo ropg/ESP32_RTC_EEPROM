@@ -21,10 +21,14 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef EEPROM_h
-#define EEPROM_h
+#ifndef ESP32_RTC_EEPROM_h
+#define ESP32_RTC_EEPROM_h
 
 #define EEPROM_SIZE 2048
+
+#ifndef EEPROM_FLASH_PARTITION_NAME
+  #define EEPROM_FLASH_PARTITION_NAME "eeprom"
+#endif
 
 #include <Arduino.h>
 
@@ -35,6 +39,8 @@ class EEPROMClass {
     ~EEPROMClass(void);
 
     static bool begin(size_t size);
+    static bool fromNVS();
+    static bool toNVS();
     static uint8_t read(int address);
     static void write(int address, uint8_t val);
     static uint16_t length();

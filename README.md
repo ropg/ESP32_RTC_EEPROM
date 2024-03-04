@@ -18,6 +18,10 @@ If your application keeps the ESP32 battery-powered but puts it in deep sleep, i
 
 This library will emulate EEPROM in RTC RAM, which stays powered during deep sleep. To learn more about deep sleep, check [this easy tutorial](https://randomnerdtutorials.com/esp32-deep-sleep-arduino-ide-wake-up-sources/), or [Espressif's documentation](https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32s3/api-reference/system/sleep_modes.html) if you want all the details. Like mentioned above, use this library only if your existing code uses EEPROM. Simply having some variables survive deep sleep is way easier, check the tutorial.
 
+### Optional saving to NVS (flash)
+
+If you call `EEPROM.toNVS()`, a copy of your EEPROM data will be save to the key "eeprom" in NVS flash, exactly like when you would use the original `EEPROM.h`. Whenever the ESP32_RTC_EEPROM wakes up with an empty RTC RAM (which is detects by the presence of a magic word), it will try to see if there's a saved copy of the right size. If so, that is loaded. You can also manually revert to the last save by calling `EEPROM.fromNVS()`. 
+
 ### Usage
 
 1. Add this library using the library manager or by cloning this repository into your Arduino library folder. 

@@ -22,11 +22,15 @@
 */
 
 #include "ESP32_RTC_EEPROM.h"
+#include <nvs.h>
+#include <esp_partition.h>
 #include <esp_log.h>
 
-// static members
-uint8_t RTC_DATA_ATTR EEPROMClass::_data[EEPROM_SIZE];
+// Wake up with a magic word in there that lets us detect that we're starting from reset or power-down. 
+uint8_t RTC_DATA_ATTR EEPROMClass::_data[EEPROM_SIZE] = { 0x23, 0x42, 0x23, 0x42, 0x23, 0x42, 0x23, 0x42 };
+
 size_t EEPROMClass::_size = EEPROM_SIZE;
+
 
 EEPROMClass::EEPROMClass(void)
 {
@@ -40,12 +44,73 @@ EEPROMClass::EEPROMClass(uint32_t sector)
 EEPROMClass::~EEPROMClass() {
 }
 
+bool EEPROMClass::fromNVS() {
+  nvs_handle _handle;
+  char _name[] = EEPROM_FLASH_PARTITION_NAME;
+
+  esp_err_t res = nvs_open(_name, NVS_READWRITE, &_handle);
+  if (res != ESP_OK) {
+      log_e("Unable to open NVS namespace: %d", res);
+      return false;
+  }
+
+  size_t key_size = 0;
+  res = nvs_get_blob(_handle, _name, NULL, &key_size);
+  if(res != ESP_OK && res != ESP_ERR_NVS_NOT_FOUND) {
+      log_e("Unable to read NVS key: %d", res);
+      return false;
+  }
+  if (key_size != _size) {
+      log_e("EEPROM in NVS not same size as EEPROM in RTC RAM");
+      return false;
+  }
+  nvs_get_blob(_handle, _name, _data, &key_size);
+  return true;
+}
+
+bool EEPROMClass::toNVS() {
+  nvs_handle _handle;
+  char _name[] = EEPROM_FLASH_PARTITION_NAME;
+
+  esp_err_t res = nvs_open(_name, NVS_READWRITE, &_handle);
+  if (res != ESP_OK) {
+      log_e("Unable to open NVS namespace: %d", res);
+      return false;
+  }
+
+  res = nvs_set_blob(_handle, _name, _data, _size);
+  if (res != ESP_OK) {
+      log_e("Unable to write NVS key: %d", res);
+      return false;
+  }
+  res = nvs_commit(_handle);
+  if (res != ESP_OK) {
+      log_e("Unable to commit NVS key: %d", res);
+      return false;
+  }
+  nvs_close(_handle);
+  return true;
+}
+
 bool EEPROMClass::begin(size_t size) {
   if (!size || size > EEPROM_SIZE) {
     return false;
   }
   _size = size;
-  // _data = &_EEPROM_DATA[0];
+  // See if we just woke up from reset or power-off
+  uint64_t* magic_word = (uint64_t*) _data;
+  // magic_word reversed because ESP32 is little-endian
+  if (*magic_word == 0x4223422342234223) {
+    log_w("Woke up cold, trying recover RTC EEPROM contents from NVS backup.");
+    // if we did, see if we have a saved copy in NVS (flash)
+    if (!fromNVS()) {
+      log_w("No backup copy found, EEPROM starts with clean slate.");
+      // If not, delete the magic word and start with a clean slate
+      *magic_word = 0;
+    } else {
+      log_w("RTC EEPROM contents recovered from NVS backup.");
+    }
+  }
   return true;
 }
 
