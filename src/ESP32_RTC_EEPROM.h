@@ -1,12 +1,10 @@
 /*
-  EEPROM.h -ported by Paolo Becchi to Esp32 from esp8266 EEPROM
+  EEPROM.h -originally written by Ivan Grokhotkov as part of the esp8266 
+            core for Arduino environment.
+           -ported by Paolo Becchi to Esp32 from esp8266 EEPROM
            -Modified by Elochukwu Ifediora <ifedioraelochukwuc@gmail.com>
            -Converted to nvs lbernstone@gmail.com
-
-  Uses a nvs byte array to emulate EEPROM
-
-  Copyright (c) 2014 Ivan Grokhotkov. All rights reserved.
-  This file is part of the esp8266 core for Arduino environment.
+           -Adapted for ESP32_RTC_EEPROM.cpp by Rop Gonggrijp
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
