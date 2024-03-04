@@ -10,7 +10,7 @@
 
 ### Introduction
 
-Flash is subject to wear from being rewritten. Flash in Espressif's own modules is guaranteed to 100.000 writes, generic SPI flash modules are generally rated anywhere from 10.000 to 100.000, **BUT** this is generally assuming that the chip is at 20 °C (68 °F), Inside a module it's always going to be hotter, and there's plenty of horror stories on the net of SPI flash chips lasting orders of magnitude flash cycles less than advertised.  
+Flash is subject to wear from being rewritten. Flash in Espressif's own modules is guaranteed to 100.000 writes, generic SPI flash modules are generally rated anywhere from 10.000 to 100.000. **BUT** this is generally assuming that the chip is at 20 °C (68 °F). Inside a module it's always going to be hotter, and there's plenty of horror stories on the net of SPI flash chips lasting orders of magnitude flash cycles less than advertised.  
 
 Espressif's ESP32 Arduino code includes an Arduino EEPROM implementation that writes the EEPROM to flash as blob in their NVS key-value storage. What this effectively means is that for every change of even just one bit in the "EEPROM", your entire EEPROM is rewritten to flash, the old copy marked deleted, and if the flash page fills up, a new page is marked Active and so forth. This can lead to more flash wear than one would expect, the exact details are [here](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/storage/nvs_flash.html#internals).
 
@@ -28,6 +28,6 @@ This library will emulate EEPROM in RTC RAM, which stays powered during deep sle
 
 ### Details
 
-* This library will always claim EEPROM_SIZE (set at 2048, change in the .h file) bytes of the RTC's RAM (it has 8k). You can set a lower number when calling EEPROM.begin(), but that number only  limits what your code can read/write, not the actual RAM used.
+* This library will always claim `EEPROM_SIZE` (set at 2048, change in the .h file) bytes of the RTC's RAM (it has 8k). You can set a lower number when calling `EEPROM.begin()`, but that number only  limits what your code can read/write, not the actual RAM used.
 
 * Cannot repeat it often enough: **only useful in combination with the ESP's deep sleep, data in this fake EEPROM does not survive powercycling, resetting or reflashing** 
