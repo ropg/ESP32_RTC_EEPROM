@@ -20,7 +20,7 @@ This library will emulate EEPROM in RTC RAM, which stays powered during deep sle
 
 ### Usage
 
-1. Add this library using the library manager or by cloniung this repository into your Arduino library folder. 
+1. Add this library using the library manager or by cloning this repository into your Arduino library folder. 
 
 2. Replace `#include <EEPROM.h>` in your code by `#include <ESP32_RTC_EEPROM.h>`.
 
