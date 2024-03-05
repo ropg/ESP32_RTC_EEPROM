@@ -25,6 +25,11 @@ void setup() {
 
   // Print boot count
   Serial.println("Boot count: " + String(bootcount));
+
+  // See if this was restored from NVS
+  if (EEPROM.wasRestored()) {
+    Serial.println("(This value was restored from NVS, so we may have missed a few.)");
+  }
   
   // Write new value
   EEPROM.write(0, bootcount);

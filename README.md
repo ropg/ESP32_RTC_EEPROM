@@ -20,7 +20,9 @@ This library will emulate EEPROM in RTC RAM, which stays powered during deep sle
 
 ### Optional saving to NVS (flash)
 
-If you call `EEPROM.toNVS()`, a copy of your EEPROM data will be save to the key "eeprom" in NVS flash, exactly like when you would use the original `EEPROM.h`. Whenever the ESP32_RTC_EEPROM wakes up with an empty RTC RAM (which is detects by the presence of a magic word), it will try to see if there's a saved copy of the right size. If so, that is loaded. You can also manually revert to the last save by calling `EEPROM.fromNVS()`. 
+If you call `EEPROM.toNVS()`, a copy of your EEPROM data will be save to the key "eeprom" in NVS flash, exactly like when you would use the original `EEPROM.h`. Whenever the ESP32_RTC_EEPROM wakes up with an empty RTC RAM (which is detects by the presence of a magic word), it will try to see if there's a saved copy of the right size. If so, that is loaded. You can also manually revert to the last save by calling `EEPROM.fromNVS()`.
+
+The function `EEPROM.wasRestored()` will tell you whether or not the contents were automaticcaly restored from NVS in this boot cycle.
 
 ### Usage
 
@@ -32,6 +34,6 @@ If you call `EEPROM.toNVS()`, a copy of your EEPROM data will be save to the key
 
 ### Details
 
-* This library will always claim `EEPROM_SIZE` (set at 2048, change in the .h file) bytes of the RTC's RAM (it has 8k). You can set a lower number when calling `EEPROM.begin()`, but that number only  limits what your code can read/write, not the actual RAM used.
+* This library will always claim `EEPROM_SIZE` (set at 2048, change in the .h file) bytes of the RTC's RAM (it has 8k). You can set a lower number when calling `EEPROM.begin()`, but that number only  limits what your code can read/write (and how much is written to NVS flash every time when backing up), not the actual RTC RAM used.
 
 * Cannot repeat it often enough: **only useful in combination with the ESP's deep sleep, data in this fake EEPROM does not survive powercycling, resetting or reflashing** 

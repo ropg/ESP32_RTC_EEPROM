@@ -4,7 +4,7 @@
            -ported by Paolo Becchi to Esp32 from esp8266 EEPROM
            -Modified by Elochukwu Ifediora <ifedioraelochukwuc@gmail.com>
            -Converted to nvs lbernstone@gmail.com
-           -Adapted for ESP32_RTC_EEPROM.cpp by Rop Gonggrijp
+           -Adapted for ESP32_RTC_EEPROM.cpp by Rop Gonggrijp <rop@rop.nl>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -41,6 +41,7 @@ class EEPROMClass {
     static bool begin(size_t size);
     static bool fromNVS();
     static bool toNVS();
+    static bool wasRestored();
     static uint8_t read(int address);
     static void write(int address, uint8_t val);
     static uint16_t length();
@@ -108,6 +109,7 @@ class EEPROMClass {
   protected:
     static size_t _size;
     static uint8_t RTC_DATA_ATTR _data[EEPROM_SIZE];
+    static bool _restored;  
 };
 
 #if !defined(NO_GLOBAL_INSTANCES) && !defined(NO_GLOBAL_EEPROM)
